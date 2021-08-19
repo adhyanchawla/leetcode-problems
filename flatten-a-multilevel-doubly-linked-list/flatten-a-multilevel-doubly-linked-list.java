@@ -9,35 +9,32 @@ class Node {
 */
 
 class Solution {
-    
-    private Node flatten_rec(Node head) {
-        Node curr = head, tail = head;
+    public Node flatten(Node head) {
+        
+        Node curr = head;
         
         while(curr != null) {
-            Node child = curr.child;
-            Node forw = curr.next; 
-            if(child != null) {
-                Node _tail = flatten_rec(child);
-                _tail.next = forw;
-                if(forw != null) forw.prev = _tail;
-                
-                curr.next = child;
-                child.prev = curr;
-                curr.child = null;
-                curr = tail;
-                
-            } else {
-                curr = forw;
+            
+            if(curr.child == null) {
+                curr = curr.next;
+                continue;
             }
             
-            if(curr != null) tail = curr;
+            Node temp = curr.child;
+            
+            while(temp.next != null)
+                temp = temp.next;
+            
+            temp.next = curr.next;
+            
+            if(curr.next != null) curr.next.prev = temp;
+            
+            curr.next = curr.child;
+            curr.child.prev = curr;
+            
+            curr.child = null;
         }
         
-        return tail;
-    }
-    
-    public Node flatten(Node head) {
-        if(head != null) flatten_rec(head);
         return head;
     }
 }
