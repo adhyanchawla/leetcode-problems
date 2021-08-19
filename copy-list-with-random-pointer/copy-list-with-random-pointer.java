@@ -13,40 +13,57 @@ class Node {
 }
 */
 
+//without space
 class Solution {
-    public Node copyRandomList(Node head) {
+    
+    public void copyList(Node head) {
         
-        HashMap<Node, Node> map = new HashMap<>();
-        
-        Node nHead = new Node(-1);
-        Node prev = nHead;
         Node curr = head;
         
         while(curr != null) {
+            Node forw = curr.next;
+            
             Node node = new Node(curr.val);
-            prev.next = node;
+            curr.next = node;
+            node.next = forw;
             
-            map.put(curr, node);
-            
-            curr = curr.next;
-            prev = prev.next;
+            curr = forw;
         }
         
-        curr = head;
-        nHead = nHead.next;
-        prev = nHead;
+    }
+    
+    public void copyRandomPointers(Node head) {
+        
+        Node curr = head;
         
         while(curr != null) {
-            if(map.get(curr.random) == null) {
-                prev.random = null;
-            } else if(map.get(curr.random) != null) {
-                prev.random = map.get(curr.random);
+            Node Random = curr.random;
+            if(Random != null) {
+                curr.next.random = Random.next;
             }
             
-            curr = curr.next;
+            curr = curr.next.next;
+        }
+    }
+    
+    public Node copyRandomList(Node head) {
+        copyList(head);
+        copyRandomPointers(head);
+        
+        Node dummy = new Node(-1);
+        Node prev = dummy;
+        
+        Node curr = head;
+        
+        while(curr != null) {
+            
+            prev.next = curr.next;
             prev = prev.next;
+            
+            curr.next = curr.next.next;
+            curr = curr.next;
         }
         
-        return nHead;
+        return dummy.next;
     }
 }
