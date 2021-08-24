@@ -9,64 +9,90 @@
  * }
  */
 class Solution {
-    
-    public ListNode midNode(ListNode head) {
-        if(head == null || head.next == null) return head;
-        
-        ListNode fast = head;
-        ListNode slow = head;
-        
-        while(fast.next != null && fast.next.next != null) {
-            fast = fast.next.next;
-            slow = slow.next;
-        }
-        
-        return slow;
-    }
-    
-    public ListNode mergeTwoSortedLL(ListNode l1, ListNode l2) {
-        if(l1 == null || l2 == null) return l1 != null ? l1 : l2;
-        
-        ListNode c1 = l1;
-        ListNode c2 = l2;
-        
-        ListNode dummy = new ListNode(-1);
-        ListNode prev = dummy;
-        
-        while(c1 != null && c2 != null) {
-            if(c1.val < c2.val) {
-                prev.next = c1;
-                prev = prev.next;
-                c1 = c1.next;
-            } else {
-                prev.next = c2;
-                prev = prev.next;
-                c2 = c2.next;
-            }
-        }
-        
-        if(c1 != null) prev.next = c1;
-        if(c2 != null) prev.next = c2;
-        
-        return dummy.next;
-    }
-    
-    public ListNode mergeSort(ListNode head) {
-        if(head == null || head.next == null) return head;
-        
-        ListNode mid = midNode(head);
-        ListNode nHead = mid.next;
-        mid.next = null;
-        
-        ListNode l1 = mergeSort(head);
-        ListNode l2 = mergeSort(nHead);
-        
-        return mergeTwoSortedLL(l1, l2);
-    }
-    
     public ListNode sortList(ListNode head) {
-        if(head == null || head.next == null) return head;
-        
-        return mergeSort(head);
+        return quickSort_(head)[0];
     }
+    
+    public ListNode[] segregate(ListNode head, int pivotIdx) {
+        
+        ListNode pNode = head;
+        
+        while(pivotIdx-->0) pNode = pNode.next;
+        
+        ListNode small = new ListNode(-1);
+        ListNode big = new ListNode(-1);
+        
+        ListNode s = small;
+        ListNode b = big;
+        
+        ListNode curr = head;
+        while(curr != null) {
+            if(curr != pNode) {
+                if(curr.val < pNode.val) {
+                    s.next = curr;
+                    s = s.next;
+                } else {
+                    b.next = curr;
+                    b = b.next;
+                }
+            }
+            curr = curr.next;
+        }
+        
+        s.next = null;
+        pNode.next = null;
+        b.next = null;
+        
+        return new ListNode[]{small.next, pNode, big.next};
+    }
+    
+    public ListNode[] mergeLists(ListNode[] left, ListNode pNode, ListNode[] right) {
+        ListNode head = null, tail = null;
+        if(left[0] != null && right[0] != null) {
+            left[1].next = pNode;
+            pNode.next = right[0];
+            head = left[0];
+            tail = right[1];
+        } else if(left[0] != null) {
+            left[1].next = pNode;
+            head = left[0];
+            tail = pNode;
+        } else if(right[0] != null) {
+            pNode.next = right[0];
+            head = pNode;
+            tail = right[1];
+        } else{
+            head = tail = pNode;
+        }
+        
+        return new ListNode[] {head, tail};
+    }
+    
+    public int length(ListNode head) {
+        int len = 0;
+        ListNode curr = head;
+        
+        while(curr != null) {
+            curr = curr.next;
+            len++;
+        }
+        
+        return len;
+    }
+    
+    public ListNode[] quickSort_(ListNode head) {
+        if(head == null || head.next == null)
+            return new ListNode[]{head, head};
+            
+        int mid = length(head) / 2;
+        
+        ListNode[] ans = segregate(head, mid);
+        
+        ListNode[] left = quickSort_(ans[0]);
+        ListNode[] right = quickSort_(ans[2]);
+        
+        return mergeLists(left, ans[1], right);
+    }
+
+    
 }
