@@ -9,52 +9,49 @@
  * }
  */
 class Solution {
-    public ListNode mergeTwoSortedLL(ListNode l1, ListNode l2) {
-        if(l1 == null || l2 == null) return l1 != null ? l1 : l2;
+    //divide and conquer
+    
+    public ListNode mergeTwoSortedLL(ListNode left, ListNode right) {
+        if(left == null || right == null) return left != null ? left : right;
         
         ListNode dummy = new ListNode(-1);
-        ListNode c = dummy;
+        ListNode prev = dummy;
         
-        ListNode t1 = l1;
-        ListNode t2 = l2;
+        ListNode c1 = left;
+        ListNode c2 = right;
         
-        while(t1 != null && t2 != null) {
-            if(t1.val < t2.val) {
-                c.next = t1;
-                c = c.next;
-                t1 = t1.next;
+        while(c1 != null && c2 != null) {
+            if(c1.val < c2.val) {
+                prev.next = c1;
+                c1 = c1.next;
+                prev = prev.next;
             } else {
-                c.next = t2;
-                c = c.next;
-                t2 = t2.next;
+                prev.next = c2;
+                c2 = c2.next;
+                prev = prev.next;
             }
         }
         
-        if(t1 != null) {
-            c.next = t1;
-        }
-        
-        if(t2 != null) {
-            c.next = t2;
-        }
+        if(c1 != null) prev.next = c1;
+        if(c2 != null) prev.next = c2;
         
         return dummy.next;
     }
     
-    public ListNode mergeKLists(ListNode[] lists, int si, int ei) {
-        if(si == ei) {
-            return lists[si];
-        }
+    public ListNode mergeKSorted(ListNode[] lists, int si, int ei) {
+        if(si > ei) return null;
+        if(si == ei) return lists[si];
         
         int mid = (si + ei) / 2;
-        ListNode leftList = mergeKLists(lists, si, mid);
-        ListNode rightList = mergeKLists(lists, mid + 1, ei);
         
-        return mergeTwoSortedLL(leftList, rightList);
+        ListNode left = mergeKSorted(lists, si, mid);
+        ListNode right = mergeKSorted(lists, mid + 1, ei);
+        
+        return mergeTwoSortedLL(left, right);
     }
-
+    
     public ListNode mergeKLists(ListNode[] lists) {
         if(lists.length == 0) return null;
-        return mergeKLists(lists, 0, lists.length - 1);
+        return mergeKSorted(lists, 0, lists.length - 1);
     }
 }
