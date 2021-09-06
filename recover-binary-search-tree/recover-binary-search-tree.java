@@ -25,6 +25,7 @@ class Solution {
         
         if(firstEle == null && prevEle != null && prevEle.val >= root.val) {
             firstEle = prevEle;
+            //secEle = root;
         }
         
         if(firstEle != null && prevEle.val >= root.val) {
