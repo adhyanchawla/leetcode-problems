@@ -15,35 +15,44 @@
  */
 class Solution {
     
-    public int maxPathSum(TreeNode root) {
-    pair pair = maxPathSumHelper(root);
-    return pair.maxPath;
-}
-    
-    private pair maxPathSumHelper(TreeNode root){
-        if(root == null){
-            return new pair(Integer.MIN_VALUE, 0);
+    public int max(int...arr) {
+        int omax = -(int)1e9;
+        for(int ele : arr) {
+            omax = Math.max(omax, ele);
         }
-    
-        int val = root.val;
-        pair pairLeft = maxPathSumHelper(root.left);
-        pair pairRight = maxPathSumHelper(root.right);
-    
-        int maxPath = Math.max(pairLeft.maxLength + pairRight.maxLength + val,  Math.max(pairLeft.maxPath, pairRight.maxPath));
-        int maxLength = Math.max(0, Math.max(pairLeft.maxLength, pairRight.maxLength) + val);
-    
-        return new pair(maxPath, maxLength);
+        return omax;
     }
-
-
-    class pair{
-
-    int maxPath;
-    int maxLength;
-
-    public pair(int maxPath, int maxLength){
-        this.maxPath = maxPath;
-        this.maxLength = maxLength;
+    
+    public int helper(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        else if(root.left == null && root.right == null) {
+            n2nmps = max(root.val, n2nmps);
+            return root.val;
+        }
+        
+        int lans = helper(root.left);
+        int rans = helper(root.right);
+        
+        int f1 = lans + root.val;
+        int f2 = rans + root.val;
+        int f3 = lans + root.val + rans;
+        int f4 = root.val;
+        
+        int r2nmps = max(f1, f2, f4);
+        n2nmps = max(n2nmps, f1, f2, f3, f4, f1 + f2 - f4);
+        
+        return r2nmps;
     }
+    
+    
+    static int n2nmps;
+    public int maxPathSum(TreeNode root) {
+        if(root.left == null && root.right == null) return root.val;
+        
+        n2nmps = -(int)1e9;
+        int ans = helper(root);
+        return Math.max(ans, n2nmps);
     }
 }
