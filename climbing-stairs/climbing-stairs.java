@@ -1,17 +1,24 @@
 class Solution {
     public int climbStairs(int n) {
-        return fibo_mem(n, new int[n + 1]);   
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+        return fib_mem(n, dp);
     }
     
-    public static int fibo_mem(int n, int[] dp) {
+    public int fib_mem(int n, int[] dp) {
         if(n <= 1) {
             return dp[n] = 1;
         }
-
-        if(dp[n] != 0) return dp[n];
-
-        int ans = fibo_mem(n - 1, dp) + fibo_mem(n - 2, dp);
-
-        return dp[n] = ans;
+        
+        if(dp[n] != -1) {
+            return dp[n];
+        }
+        
+        
+        int count = 0;
+        count = fib_mem(n - 1, dp) + fib_mem(n - 2, dp);
+        
+        return dp[n] = count;
+        
     }
 }
