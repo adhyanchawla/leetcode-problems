@@ -1,47 +1,25 @@
 class Solution {
     public int minCostClimbingStairs(int[] cost) {
-        int a = cost[0], b = cost[1];
-        for(int i = 2; i <= cost.length; i++) {
-            int min = Math.min(a, b) + (i != cost.length ? cost[i] : 0);
-            a = b;
-            b = min;
-        }
-        return b;
+        int[]dp = new int[cost.length + 1];
+        Arrays.fill(dp, -1);
+        return minCost(cost, dp, cost.length);
     }
     
-    
-    
-    public int minCost_tab(int[] cost, int SR, int ER, int[] dp) {
-    
-        
-        for(int er = SR; er <= ER; er++) {
-            if(er <= 1) {
-                dp[er] = cost[er];
-                continue;
-            }
-            
-            int minPath1 = dp[er - 1];
-            int minPath2 = dp[er - 2];
-            
-            int minPath = Math.min(minPath1, minPath2) + (er != cost.length ? cost[er] : 0);
-            
-            dp[er] = minPath;
+    public int minCost(int[] cost, int[] dp, int idx) {
+        if(idx <= 1) {
+            return dp[idx] = cost[idx];
         }
         
-        return dp[ER];
+        if(dp[idx] != -1) {
+            return dp[idx];
+        }
+        
+        int min = 0;
+        int jump1 = minCost(cost, dp, idx - 1);
+        int jump2 = minCost(cost, dp, idx - 2);
+        
+        min = Math.min(jump1, jump2) + (idx != cost.length ? cost[idx] : 0);
+        
+        return dp[idx] = min;
     }
-    
-//     public int minCost(int[] cost, int[] dp, int idx) {
-//         if(idx <= 1) return dp[idx] = cost[idx];
-        
-//         if(dp[idx] != 0) return dp[idx];
-        
-        
-//         int oneStep = minCost(cost, dp, idx - 1);
-//         int twoStep = minCost(cost, dp, idx - 2);
-        
-//         int minPath = Math.min(oneStep, twoStep) + ((idx != cost.length) ? cost[idx] : 0);
-        
-//         return dp[idx] = minPath;
-//     }
 }
