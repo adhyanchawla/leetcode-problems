@@ -3,22 +3,25 @@ class Solution {
         int n = s.length();
         int[][] dp = new int[n][n];
         
-        return lpss(s, 0, n - 1, dp);
+        return lpss_tab(s, 0, n - 1, dp);
     }
     
-    public int lpss(String s, int i, int j, int[][] dp) {
-        if(i >= j) {
-            return dp[i][j] = (i == j) ? 1 : 0;
-        }
+    public int lpss_tab(String str, int I, int J, int[][] dp) {
+        int n = str.length();
+        for(int gap = 0; gap < n; gap++) {
+            for(int i = 0, j = gap; i < n && j < n; i++, j++) {
+                if(i >= j) {
+                    dp[i][j] = (i == j) ? 1 : 0; 
+                    continue;
+                }
         
-        if(dp[i][j] != 0) {
-            return dp[i][j];
+                if(str.charAt(i) == str.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
         }
-        
-        if(s.charAt(i) == s.charAt(j)) {
-            return dp[i][j] = (lpss(s, i + 1, j - 1, dp) + 2);
-        } else {
-            return dp[i][j] = Math.max(lpss(s, i, j - 1, dp), lpss(s, i + 1, j, dp));
-        }
+        return dp[I][J];
     }
 }
