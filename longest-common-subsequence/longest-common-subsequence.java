@@ -1,17 +1,14 @@
 class Solution {
     public int longestCommonSubsequence(String text1, String text2) {
-        int n = text1.length(), m = text2.length();
-        int[][] dp = new int[n + 1][m + 1];
+        int[][] dp = new int[text1.length() + 1][text2.length() + 1];
         for(int[]d : dp) {
             Arrays.fill(d, -1);
         }
+        
         return lcss(text1, text2, text1.length(), text2.length(), dp);
     }
     
     public int lcss(String s1, String s2, int n, int m, int[][] dp) {
-        // if(n == 0 && m == 0) {
-        //     return dp[n][m] = 1;
-        // }
         if(n == 0 || m == 0) {
             return dp[n][m] = 0;
         }
